@@ -1,10 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" ng-app="redditApp" ng-cloak>
 <head>
-  <meta charset="UTF-8">
-  <title>Reddit Clone</title>
+    <link rel="stylesheet" href="http://reset5.googlecode.com/hg/reset.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <title>Reddit Clone</title>
 </head>
-<body>
-  
+<body ng-controller="Reddit">
+<style>
+    /*keep curlies from showing*/
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+    }
+</style>
+
+<nav>
+    Reddit Clone
+    <span ng-click="show()"><i class="fa fa-plus"></i> Submit Post</span>
+    <input type="text" class="search" placeholder="Search" ng-model="search" ng-init="selected= '-votes'"/>
+    <!--Results will fade in an out-->
+    Sort by <select name="articles" id="articles" ng-model="selected">
+    <option value="-votes">votes</option>
+    <option value="date">date</option>
+    <option value="title">title</option>
+</select>
+</nav>
+
+
+    <form ng-submit="submitPost()" ng-show="form > 0">
+        <p>
+            <label for="title">Title</label><br>
+            <input type="text" id="title" placeholder="Title" ng-model="title" required>
+        </p>
+        <p>
+            <label for="author">Author</label><br>
+            <input type="text" id="author" placeholder="Author" ng-model="author" required>
+        </p>
+        <p>
+            <label for="image">Image URL</label><br>
+            <input type="text" id="image" placeholder="Image URL" ng-model="image" required>
+        </p>
+        <p>
+            <label for="description">Description</label><br>
+            <input type="text" id="description" placeholder="Description" ng-model="description" required>
+        </p>
+
+        <input type="submit" value="Submit Post">
+    </form>
+
+
+
+<article ng-repeat="info in articles | filter: search | orderBy: selected">
+    <!--order by votes is standard-->
+    <img ng-src="{{info.image}}" alt="image" height="150" width="200"/><br>
+    {{info.title}} |
+    <i class="fa fa-arrow-up" ng-click="upvote(info)"></i><i class="fa fa-arrow-down" ng-click="downvote(info)"></i><span ng-class="{pos: info.votes > 0, neg: info.votes < 0}"> {{info.votes}}</span><br>
+    <!--This will have a class to change from green to red if num is pos or neg/ 0 = black-->
+    <span class="author">By: {{info.author}}</span><br>
+    {{info.description}}<br>
+    <i class="fa fa-calendar"></i> {{info.date | date: 'EEEE, MMMM dd, yyyy'}} | <i class="fa fa-comment"></i> {{comments}} | <button ng-onclick="addComment()"><i class="fa fa-pencil"></i> Add Comment</button>
+
+    <!--These will need a count depending on how many comments are added-->
+    <!--comments will display in here, toggle on show/hide when clicked, these are pluralized correctly depending on the number of comments-->
+    <div ng-hide="comment">
+        This is where comments will display
+    </div>
+    <!--add comment is also toggled in this section with author and text, fades in on submit-->
+    <div ng-hide="{4+4=8}">
+        This is where comments will be added
+        Author: <input type="text" placeholder="Name"/> Comment: <input type="text" placeholder="comments here"/>
+        <input type="submit" name="name" value="Add Comment" ng-click="addComment">
+    </div>
+</article>
+
+
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js"></script>
+<script src="angular-sanitize.js"></script>
+<script src="app.js" charset="utf-8"></script>
 </body>
 </html>
